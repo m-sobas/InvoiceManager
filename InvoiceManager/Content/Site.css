@@ -27,3 +27,8 @@ textarea {
     background-color: #777;
     border-color: #fff
 }
+
+.field-validation-error
+{
+    color: #ff0000;
+}
