@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using InvoiceManager.Models.Domains;
+using System.ComponentModel.DataAnnotations;
 
 namespace InvoiceManager.Models
 {
@@ -19,5 +20,10 @@ namespace InvoiceManager.Models
         [Display(Name = "Potwierdź hasło")]
         [Compare("Password", ErrorMessage = "Hasło i jego potwierdzenie są niezgodne.")]
         public string ConfirmPassword { get; set; }
+
+        [Display(Name = "Nazwa")]
+        public string Name { get; set; }
+
+        public Address Address { get; set; }
     }
 }

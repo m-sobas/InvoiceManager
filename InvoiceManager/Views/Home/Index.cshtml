@@ -1,31 +1,79 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@model IEnumerable<InvoiceManager.Models.Domains.Invoice>
+
+@{
+    ViewBag.Title = "Faktury";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+<h1 class="mb-3">Faktury</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<button class="btn btn-primary mb-3" onclick='window.location.href="@Url.Action("Invoice", "Home")"'>Dodaj nową</button>
+
+@if (Model != null && Model.Any())
+{ 
+    <table class="table table-hover table-striped mt-3 mb-5">
+        <thead>
+            <tr>
+                <th scope="col">Tytuł</th>
+                <th scope="col">Client</th>
+                <th scope="col">Wartość</th>
+                <th scope="col">Data utworzenia</th>
+                <th scope="col">Termin płatności</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            { 
+                <tr>
+                    <td><a class="font-weight-bold" href="@Url.Action("Invoice", "Home", new { id = invoice.Id })">@invoice.Title</a></td>
+                    <td>@invoice.Client.Name</td>
+                    <td>@invoice.Value zł</td>
+                    <td>@invoice.CreatedDate.ToString("dd-MM-yyyy")</td>
+                    <td>@invoice.PaymentDate.ToString("dd-MM-yyyy")</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" onclick="deleteInvoice(@invoice.Id, this)">Usuń</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+ else
+{
+    <div>
+        Brak faktur do wyświetlenia
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
-</div>
+}
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        function deleteInvoice(id, btn) {
+
+            if (!confirm("Czy na pewno chcesz usunąć fakturę?"))
+                return;
+
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("Delete", "Home")",
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    if (data.success) {
+                        var row = btn.parentNode.parentNode;
+                        row.parentNode.removeChild(row);
+                    } else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (data) {
+                    alert(data.Message);
+                },
+                dataType: 'json'
+            });
+        }
+
+    </script>
+}
