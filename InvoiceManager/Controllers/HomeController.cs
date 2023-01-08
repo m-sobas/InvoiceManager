@@ -92,6 +92,7 @@ namespace InvoiceManager.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Invoice(Invoice invoice)
         {
             var userId = User.Identity.GetUserId();
@@ -112,6 +113,7 @@ namespace InvoiceManager.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult InvoicePosition(InvoicePosition invoicePosition)
         {
             var userId = User.Identity.GetUserId();
@@ -151,10 +153,10 @@ namespace InvoiceManager.Controllers
             catch (Exception ex)
             {
                 // logowanie w pliku
-                return Json(new { Succsess = false, Message = ex.Message });
+                return Json(new { Success = false, Message = ex.Message });
             }
 
-            return Json(new { Succsess = true });
+            return Json(new { Success = true });
         }
 
         [HttpPost]
@@ -172,7 +174,7 @@ namespace InvoiceManager.Controllers
             catch (Exception ex)
             {
                 // logowanie w pliku
-                return Json(new { Succsess = false, Message = ex.Message });
+                return Json(new { Success = false, Message = ex.Message });
             }
 
             return Json(new { Success = true, InvoiceValue = invoiceValue });
