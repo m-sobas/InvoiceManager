@@ -1,6 +1,9 @@
-﻿using InvoiceManager.Models.Domains;
+﻿using InvoiceManager.Models;
+using InvoiceManager.Models.Domains;
 using InvoiceManager.Models.Repositories;
+using InvoiceManager.Models.ViewModels;
 using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security.Provider;
 using Rotativa;
 using Rotativa.Options;
 using System;
@@ -51,5 +54,19 @@ namespace InvoiceManager.Controllers
             return File(data, "application/pdf", fileName);
         }
 
+        public ActionResult Print(int id)
+        {
+            var userId = User.Identity.GetUserId();
+            var invoice = _invoiceRepository.GetInvoice(id, userId);
+
+            return View("PrintTemplate", invoice);
+        }
+
+        public ActionResult PrintInvoice(int invoiceId)
+        {
+            var report = new ActionAsPdf("Print", new { id = invoiceId });
+
+            return report;
+        }
     }
 }
