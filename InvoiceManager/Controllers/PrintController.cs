@@ -59,7 +59,7 @@ namespace InvoiceManager.Controllers
             var userId = User.Identity.GetUserId();
             var invoice = _invoiceRepository.GetInvoice(id, userId);
 
-            return View("PrintTemplate", invoice);
+            return View("InvoiceTemplate", invoice);
         }
 
         public ActionResult PrintInvoice(int invoiceId)
