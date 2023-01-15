@@ -12,81 +12,85 @@
 
     <button class="btn btn-secondary mb-3" onclick="generatePDF()">Generuj PDF</button>
 
-    <button class="btn btn-secondary mb-3" onclick='window.location.href="@Url.Action("PrintInvoice", "Print", new { invoiceId = Model.Invoice.Id })"'>Drukuj fakturę</button>
+    @*<button class="btn btn-secondary mb-3" onclick='window.location.href="@Url.Action("PrintInvoice", "Print", new { invoiceId = Model.Invoice.Id })"'>Drukuj fakturę</button>*@
+
+    <button id="printButton" class="btn btn-secondary mb-3" onclick="printInvoice()">Drukuj fakturę</button>
 }
 
-<div class="row">
 
-    <div class="col-lg-6">
-        @using (Html.BeginForm("Invoice", "Home"))
-        {
-            @Html.AntiForgeryToken()
+    <div class="row">
 
-            if (Model.Invoice.Id == 0)
+        <div class="col-lg-6">
+            @using (Html.BeginForm("Invoice", "Home"))
             {
-                <p class="alert alert-info mt-4 mb-4">
-                    Pola tytuł, klient, sposób płatności i termin są <strong>wymagane</strong>.
-                </p>
-            }
+                @Html.AntiForgeryToken()
 
-            @Html.HiddenFor(x => x.Invoice.Id)
-            @Html.HiddenFor(x => x.Invoice.UserId)
+                if (Model.Invoice.Id == 0)
+                {
+                    <p class="alert alert-info mt-4 mb-4">
+                        Pola tytuł, klient, sposób płatności i termin są <strong>wymagane</strong>.
+                    </p>
+                }
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Invoice.Title)
-                @Html.TextBoxFor(x => x.Invoice.Title, new { @class = "form-control", autofocus = "autofocus" })
-                @Html.ValidationMessageFor(x => x.Invoice.Title)
-            </div>
+                @Html.HiddenFor(x => x.Invoice.Id)
+                @Html.HiddenFor(x => x.Invoice.UserId)
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Invoice.ClientId)
-                @Html.DropDownListFor(x => x.Invoice.ClientId, new SelectList(Model.Clients, "Id", "Name"), "-- Wybierz klienta --", new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Invoice.ClientId)
-            </div>
-
-            if (Model.Invoice.Id != 0)
-            {
                 <div class="form-group">
-                    @Html.LabelFor(x => x.Invoice.Value)
-                    @Html.TextBoxFor(x => x.Invoice.Value, new { @class = "form-control", @readonly = "readonly" })
+                    @Html.LabelFor(x => x.Invoice.Title)
+                    @Html.TextBoxFor(x => x.Invoice.Title, new { @class = "form-control", autofocus = "autofocus" })
+                    @Html.ValidationMessageFor(x => x.Invoice.Title)
                 </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.ClientId)
+                    @Html.DropDownListFor(x => x.Invoice.ClientId, new SelectList(Model.Clients, "Id", "Name"), "-- Wybierz klienta --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Invoice.ClientId)
+                </div>
+
+                if (Model.Invoice.Id != 0)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Invoice.Value)
+                        @Html.TextBoxFor(x => x.Invoice.Value, new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.MethodOfPaymentId)
+                    @Html.DropDownListFor(x => x.Invoice.MethodOfPaymentId, new SelectList(Model.MethodOfPayments, "Id", "Name"), "-- Wybierz sposób płatności --", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Invoice.MethodOfPaymentId)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.PaymentDate)
+                    @Html.TextBoxFor(x => x.Invoice.PaymentDate, "{0:dd-MM-yyyy}", new { @class = "form-control", @id = "PaymentDate", autocomplete = "off" })
+                    @Html.ValidationMessageFor(x => x.Invoice.PaymentDate)
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.Comments)
+                    @Html.TextAreaFor(x => x.Invoice.Comments, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(x => x.Invoice.Comments)
+                </div>
+
+                <button class="btn btn-primary" btn-lg mb-5" type="submit">Zapisz</button>
+
             }
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Invoice.MethodOfPaymentId)
-                @Html.DropDownListFor(x => x.Invoice.MethodOfPaymentId, new SelectList(Model.MethodOfPayments, "Id", "Name"), "-- Wybierz sposób płatności --", new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Invoice.MethodOfPaymentId)
-            </div>
+        <div class="col-5 offset-lg-1">
+            @if (Model.Invoice.Id != 0)
+            {
+                @Html.Partial("_InvoicePosition", Model.Invoice.InvoicePositions)
+            }
+        </div>
 
-            <div class="form-group">
-                @Html.LabelFor(x => x.Invoice.PaymentDate)
-                @Html.TextBoxFor(x => x.Invoice.PaymentDate, "{0:dd-MM-yyyy}", new { @class = "form-control", @id = "PaymentDate", autocomplete = "off" })
-                @Html.ValidationMessageFor(x => x.Invoice.PaymentDate)
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(x => x.Invoice.Comments)
-                @Html.TextAreaFor(x => x.Invoice.Comments, new { @class = "form-control" })
-                @Html.ValidationMessageFor(x => x.Invoice.Comments)
-            </div>
-
-            <button class="btn btn-primary" btn-lg mb-5" type="submit">Zapisz</button>
-
-        }
     </div>
 
-    <div class="col-5 offset-lg-1">
-        @if (Model.Invoice.Id != 0)
-        {
-            @Html.Partial("_InvoicePosition", Model.Invoice.InvoicePositions)
-        }
-    </div>
-
-</div>
-
-@section Scripts
+    @section Scripts
 {
-    <script type="text/javascript">
+        <script type="text/javascript">
+
 
         function generatePDF() {
 
@@ -106,6 +110,36 @@
                 cache: false
             });
         }
+
+
+        function printInvoice() {
+
+            var width = 1200;
+            var height = 800;
+            var left = (screen.width - width) / 2;
+            var top = (screen.height - height) / 2;
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("PrintInvoice", "Print")' + '?invoiceId=' + @Model.Invoice.Id,
+                data: {
+                    id: '@Model.Invoice.Id'
+                },
+                success: function (data) {
+
+                    var w = window.open("@Url.Action("PrintInvoice", "Print")" + "?invoiceId=@Model.Invoice.Id", "_blank",
+                        "menubar=no, toolbar=no, resizable=no, left="+left + ", top="+top + ", width="+width + ", height="+height);
+
+                    w.print();
+                },
+                error: function (data) {
+                    alert(data.Message);
+                },
+                dataType: 'html',
+                cache: false
+            });
+        }
+
 
         function deleteInvoicePosition(id, invoiceId, btn) {
 
@@ -138,6 +172,7 @@
             });
         }
 
+
         $(document).ready(function () {
 
             $.validator.methods.number = function (value, element) {
@@ -166,5 +201,5 @@
 
         });
 
-    </script>
-}
+        </script>
+    }

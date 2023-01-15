@@ -9,6 +9,7 @@ using Rotativa.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -54,19 +55,19 @@ namespace InvoiceManager.Controllers
             return File(data, "application/pdf", fileName);
         }
 
-        public ActionResult Print(int id)
-        {
-            var userId = User.Identity.GetUserId();
-            var invoice = _invoiceRepository.GetInvoice(id, userId);
-
-            return View("InvoiceTemplate", invoice);
-        }
-
         public ActionResult PrintInvoice(int invoiceId)
         {
-            var report = new ActionAsPdf("Print", new { id = invoiceId });
+            var userId = User.Identity.GetUserId();
+            var invoice = _invoiceRepository.GetInvoice(invoiceId, userId);
 
+            var report = new ViewAsPdf(@"InvoiceTemplate", invoice)
+            {
+                PageSize = Size.A4,
+                PageOrientation = Orientation.Portrait
+            };
+           
             return report;
         }
+
     }
 }

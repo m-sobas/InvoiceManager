@@ -403,7 +403,7 @@
     <Content Include="Views\Home\_InvoicePosition.cshtml" />
     <Content Include="Views\Home\InvoicePosition.cshtml" />
     <Content Include="Views\Print\InvoiceTemplate.cshtml" />
-    <Content Include="Views\Print\Print.cshtml" />
+    <Content Include="Views\Print\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
