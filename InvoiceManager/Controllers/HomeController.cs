@@ -5,10 +5,12 @@ using InvoiceManager.Models.ViewModels;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Services.Description;
+using System.Windows.Forms;
 
 namespace InvoiceManager.Controllers
 {
@@ -191,6 +193,20 @@ namespace InvoiceManager.Controllers
         [AllowAnonymous]
         public ActionResult Contact()
         {
+            PrinterSettings settings = new PrinterSettings();
+
+            PrintDialog printDialog = new PrintDialog();
+
+            if (printDialog.ShowDialog() == DialogResult.OK)
+            {
+                settings = printDialog.PrinterSettings;
+            }
+
+            ViewBag.PaperSize = printDialog.PrinterSettings.PaperSizes[0].PaperName;
+            ViewBag.PrinterName = printDialog.PrinterSettings.PrinterName;
+
+            //throw new Exception("Błąd 123");
+
             ViewBag.Message = "Your contact page.";
 
             return View();

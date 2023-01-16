@@ -113,33 +113,19 @@
 
 
         function printInvoice() {
+            alert("Uważaj! Będę drukować!");
 
             var width = 1200;
             var height = 800;
             var left = (screen.width - width) / 2;
             var top = (screen.height - height) / 2;
 
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("PrintInvoice", "Print")' + '?invoiceId=' + @Model.Invoice.Id,
-                data: {
-                    id: '@Model.Invoice.Id'
-                },
-                success: function (data) {
-
-                    var w = window.open("@Url.Action("PrintInvoice", "Print")" + "?invoiceId=@Model.Invoice.Id", "_blank",
+            var w = window.open("@Url.Action("PrintInvoice", "Print")" + "?invoiceId=@Model.Invoice.Id", "_blank",
                         "menubar=no, toolbar=no, resizable=no, left="+left + ", top="+top + ", width="+width + ", height="+height);
 
-                    w.print();
-                },
-                error: function (data) {
-                    alert(data.Message);
-                },
-                dataType: 'html',
-                cache: false
-            });
+            w.print();
         }
-
+        
 
         function deleteInvoicePosition(id, invoiceId, btn) {
 

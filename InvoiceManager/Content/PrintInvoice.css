@@ -58,3 +58,7 @@ tr, td, th, thead, thead tr, thead tr th, tfoot {
 th {
     font-weight: normal;
 }
+
+.privacyPoliceInfo, hr {
+    display: none !important;
+}
