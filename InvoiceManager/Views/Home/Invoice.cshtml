@@ -120,9 +120,14 @@
             var top = (screen.height - height) / 2;
 
             var w = window.open("@Url.Action("PrintInvoice", "Print")" + "?invoiceId=@Model.Invoice.Id", "_blank",
-                        "menubar=no, toolbar=no, resizable=no, left="+left + ", top="+top + ", width="+width + ", height="+height);
+                        "left="+left + ", top="+top + ", width="+width + ", height="+height);
 
-            w.print();
+            w.onload = function () {
+                w.print();
+                w.onafterprint = function () {
+                    w.close();
+                };
+            };
         }
         
 
